@@ -1,0 +1,8 @@
+Package: waifucompanion
+Version: 2.0.0-alpha
+Section: misc
+Architecture: all
+Maintainer: Toshayo <abc126cba.abc126cba@yandex.ru>
+Description: Waifu on your screen!
+Priority: optional
+Depends: python3-venv

@@ -1,0 +1,6 @@
+#!/bin/bash
+
+rm -rf /opt/waifucompanion/venv >/dev/null 2>/dev/null
+find /opt/waifucompanion -name __pycache__ -exec rm -rf {} \; >/dev/null 2>/dev/null
+
+exit 0
