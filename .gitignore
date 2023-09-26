@@ -1,0 +1,9 @@
+# App assets
+/assets/models/*/
+
+# App plugins
+/plugins/*/
+
+# IDE Folders
+/.idea/
+__pycache__/
