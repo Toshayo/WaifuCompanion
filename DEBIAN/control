@@ -4,4 +4,4 @@ Architecture: all
 Maintainer: Toshayo <abc126cba.abc126cba@yandex.ru>
 Description: Waifu on your screen!
 Priority: optional
-Depends: python3-pyqt5, python3-xdg, python3-selenium
+Depends: python3-venv
