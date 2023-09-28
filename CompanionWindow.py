@@ -37,6 +37,9 @@ class CompanionWindow(QGraphicsView):
         self.is_mouse_down = False
         self.mouse_initial_position = QPoint(0, 0)
 
+        self.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        self.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+
         EventManager.INSTANCE.fire(self, EventManager.Events.COMPANION_WINDOW_CONSTRUCT)
 
     def init_tray(self):
