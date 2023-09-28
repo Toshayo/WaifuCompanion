@@ -1,6 +1,6 @@
 #!/bin/bash
 
-if test -d /opt/waifucompanion;
+if test -d /opt/waifucompanion; then
   if test -d /opt/waifucompanion/venv; then
     rm -rf /opt/waifucompanion/venv >/dev/null 2>/dev/null
   fi
