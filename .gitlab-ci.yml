@@ -37,7 +37,7 @@ build-deb:
   script:
     - mkdir -p ROOTFS/opt/waifucompanion
     - rsync -av --exclude=".git*" --exclude="DEBIAN" . ROOTFS/opt/waifucompanion
-    - rsync -av --exclude="misc" DEBIAN ROOTFS/DEBIAN
+    - rsync -av --exclude="misc" DEBIAN/ ROOTFS/DEBIAN
     - cp -R DEBIAN/misc/* ROOTFS/
 
     # Set deb version
