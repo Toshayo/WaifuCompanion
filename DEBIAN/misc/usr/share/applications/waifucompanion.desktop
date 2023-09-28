@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=Waifu Companion
+Exec=waifucompanion
+Terminal=false
+Type=Application
+Icon=/opt/waifucompanion/assets/icon.png
+Comment=Waifu on your screen!
+Categories=Utility;
