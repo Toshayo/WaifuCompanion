@@ -1,0 +1,12 @@
+#!/bin/bash
+cd /opt/waifucompanion
+
+if test ! -d venv; then
+  python3 -m venv venv
+  source venv/bin/activate
+  pip install -r requirements.txt
+fi
+
+cd -
+
+exit 0
