@@ -19,7 +19,9 @@ class CompanionModelManager(QObject):
                 with open(os.path.join(model.path, 'manifest.json'), 'r') as manifest:
                     model_def = CompanionModelDefinition(model.path, json.load(manifest))
                     self.models[model_def.name] = model_def
-        EventManager.INSTANCE.register_listener(EventManager.Events.COMPANION_TRAY_INIT, self.tray_init)
+        EventManager.INSTANCE.register_listener(
+            EventManager.Events.COMPANION_TRAY_INIT, self.tray_init
+        )
 
     def on_model_select(self):
         sender: QAction | QObject = self.sender()

@@ -22,11 +22,13 @@ class CompanionWindow(QGraphicsView):
         self.setAttribute(Qt.WA_TranslucentBackground)
         self.setStyleSheet('background:transparent')
 
-        self.tray = QSystemTrayIcon(QIcon("assets/icon.png"), self)
+        self.tray = QSystemTrayIcon(QIcon('assets/icon.png'), self)
         self.init_tray()
 
         scene = QGraphicsScene()
-        self.companion_graphics_item = CompanionGraphicsItem(self.companion_model, self.screen().availableSize())
+        self.companion_graphics_item = CompanionGraphicsItem(
+            self.companion_model, self.screen().availableSize()
+        )
         scene.addItem(self.companion_graphics_item)
         self.setScene(scene)
 
@@ -44,7 +46,7 @@ class CompanionWindow(QGraphicsView):
 
     def init_tray(self):
         self.tray.activated.connect(lambda: self.setVisible(not self.isVisible()))
-        self.tray.setToolTip("Waifu Companion")
+        self.tray.setToolTip('Waifu Companion')
 
         tray_menu = QMenu(self)
 
@@ -63,17 +65,23 @@ class CompanionWindow(QGraphicsView):
         # super().mousePressEvent(event)
         self.mouse_initial_position = event.pos()
         self.is_mouse_down = True
+        EventManager.INSTANCE.fire(self, EventManager.Events.COMPANION_WINDOW_MOUSE_DOWN)
 
     def mouseReleaseEvent(self, event: QMouseEvent) -> None:
         # super().mouseReleaseEvent(event)
         self.is_mouse_down = False
         self.companion_model.update_position((self.pos().x(), self.pos().y()))
+        EventManager.INSTANCE.fire(self, EventManager.Events.COMPANION_WINDOW_MOUSE_UP)
 
     def mouseMoveEvent(self, event: QMouseEvent) -> None:
         self.move(
             self.pos().x() + event.x() - self.mouse_initial_position.x(),
             self.pos().y() + event.y() - self.mouse_initial_position.y()
         )
+
+    def moveEvent(self, event):
+        super().moveEvent(event)
+        EventManager.INSTANCE.fire(self, EventManager.Events.COMPANION_WINDOW_MOVED)
 
     def tick(self):
         if self.is_mouse_down:

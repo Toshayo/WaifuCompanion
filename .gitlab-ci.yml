@@ -1,4 +1,5 @@
 # Here is the breakdown of all required CI variables
+#   - DEB_PACKAGE_MAINTAINER - Deb package maintainer
 #   - GPG_KEY_FILE - public key for encrypting the archive
 #   - REPO_URL - URL of the repository manager (that will handle package info upload)
 #   - REPO_USER - Username for basic authentication of the repo
@@ -47,6 +48,10 @@ build-deb:
     # Set package installed size
     - >-
       echo "Installed-Size: $((($(du -sb ROOTFS/ | cut -f 1) + 1024) / 1024))" >> ROOTFS/DEBIAN/control
+
+    # Set package maintainer
+    - >-
+      echo "Maintainer: $DEB_PACKAGE_MAINTAINER" >> ROOTFS/DEBIAN/control
 
     # Force file permissions
     - find ROOTFS/ -type d -exec chmod 755 {} \;

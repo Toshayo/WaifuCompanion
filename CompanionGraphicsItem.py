@@ -5,11 +5,11 @@ from PyQt5.QtCore import Qt, QRectF, QSize
 from PyQt5.QtGui import QPixmap, QTransform
 from PyQt5.QtWidgets import QGraphicsItem, QWidget, QStyleOptionGraphicsItem
 
-from modelmanager import CompanionModelManager
+from modelmanager.CompanionModelManager import CompanionModelDefinition
 
 
 class CompanionGraphicsItem(QGraphicsItem):
-    def __init__(self, companion_model: CompanionModelManager.CompanionModelDefinition, screen_size: QSize):
+    def __init__(self, companion_model: CompanionModelDefinition, screen_size: QSize):
         super().__init__()
 
         self.companion_model = companion_model

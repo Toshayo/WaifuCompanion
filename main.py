@@ -11,7 +11,7 @@ from CompanionWindow import CompanionWindow
 from modelmanager import CompanionModelManager
 
 
-def restart(sender=None):
+def restart(_):
     global app
     app.quit()
     os.execv(sys.executable, ['python3'] + sys.argv)
@@ -20,13 +20,16 @@ def restart(sender=None):
 if __name__ == '__main__':
     app = QApplication(sys.argv)
 
-    plugins = [__import__('plugins.' + name, fromlist=['']) for _, name, _ in pkgutil.iter_modules([os.path.abspath('plugins')])]
+    plugins = [__import__('plugins.' + name, fromlist=[''])
+               for _, name, _ in pkgutil.iter_modules([os.path.abspath('plugins')])]
     EventManager.INSTANCE.fire(None, EventManager.Events.PLUGINS_INIT)
 
     if Config.INSTANCE.active_model is None:
         Config.INSTANCE.set_active_model(list(CompanionModelManager.INSTANCE.models.keys())[0])
 
-    window = CompanionWindow(app, CompanionModelManager.INSTANCE.models[Config.INSTANCE.active_model])
+    window = CompanionWindow(
+        app, CompanionModelManager.INSTANCE.models[Config.INSTANCE.active_model]
+    )
     window.move(QCursor.pos())
     window.show()
 

@@ -13,11 +13,13 @@ class CompanionModelDefinition:
         self.scale = manifest['scale']
         self.aabb = manifest['aabb'] if 'aabb' in manifest else {
             'x': 0, 'y': 0,
-            'width': manifest['sprite']['meta']['size']['w'], 'height': manifest['sprite']['meta']['size']['h']
+            'width': manifest['sprite']['meta']['size']['w'],
+            'height': manifest['sprite']['meta']['size']['h']
         }
         self.is_inverted = manifest['inverted']
         self.language = manifest['language']
-        self.frames_count = manifest['sprite']['frameCount'] if 'frameCount' in manifest['sprite'] else 1
+        self.frames_count = manifest['sprite']['frameCount'] if 'frameCount' in manifest['sprite'] \
+            else 1
         self.sprite_count = manifest['sprite']['spriteCount']
         self.image_size = manifest['sprite']['meta']['size']
         self.frame_size = {
@@ -44,7 +46,8 @@ class CompanionModelDefinition:
         self.pos[1] = pos[1]
         self.should_validate_pos = True
 
-    def get_next_pos(self, screen_bounds: tuple[int, int, int, int], companion_size: tuple[int, int, int, int],
+    def get_next_pos(self, screen_bounds: tuple[int, int, int, int],
+                     companion_size: tuple[int, int, int, int],
                      pos: tuple[int, int]) -> tuple[int, int]:
         if self.should_validate_pos:
             self.should_validate_pos = False
@@ -75,11 +78,14 @@ class CompanionModelDefinition:
             return self.target
         return self.pos[0], self.pos[1]
 
-    def find_new_target(self, screen_bounds: tuple[int, int, int, int], companion_size: tuple[int, int, int, int],
+    def find_new_target(self, screen_bounds: tuple[int, int, int, int],
+                        companion_size: tuple[int, int, int, int],
                         pos: tuple[int, int]):
-        x = random.randint(screen_bounds[0] - companion_size[0], screen_bounds[2] - companion_size[2])
+        x = random.randint(screen_bounds[0] - companion_size[0],
+                           screen_bounds[2] - companion_size[2])
         if self.can_fly:
-            y = random.randint(screen_bounds[1] - companion_size[1], screen_bounds[3] - companion_size[3])
+            y = random.randint(screen_bounds[1] - companion_size[1],
+                               screen_bounds[3] - companion_size[3])
         else:
             y = screen_bounds[3] - companion_size[3]
         delta = x - pos[0], y - pos[1]
@@ -96,10 +102,12 @@ class CompanionModelDefinition:
         if self.can_fly:
             max_step *= 2
         screen_diagonal = math.sqrt(screen_bounds[2] ** 2 + screen_bounds[3] ** 2)
-        return (random.random() * (max_step - self.MIN_SCREEN_STEP) + self.MAX_SCREEN_STEP) * screen_diagonal
+        screen_step = random.random() * (max_step - self.MIN_SCREEN_STEP) + self.MAX_SCREEN_STEP
+        return screen_step * screen_diagonal
 
     def fix_position(self, screen_bounds: tuple[int, int, int, int],
-                     companion_size: tuple[int, int, int, int], pos: tuple[int, int]) -> tuple[int, int]:
+                     companion_size: tuple[int, int, int, int],
+                     pos: tuple[int, int]) -> tuple[int, int]:
         x = min(max(screen_bounds[0] - companion_size[0], pos[0]), screen_bounds[2])
         if self.can_fly:
             y = min(max(screen_bounds[1] - companion_size[1], pos[1]), screen_bounds[3])
