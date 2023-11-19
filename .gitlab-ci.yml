@@ -9,9 +9,6 @@
 #   - CLIENT_SECRET - Client secret of the Google project
 #   - REFRESH_TOKEN - Obtained with steps bellow \/
 #
-#   Project-specific variables:
-#     - DIALOGFLOW_CONFIG_FILE - Configuration of DialogFlow
-#
 # The CI needs an OAuth token and a refresh token
 # To get them, follow these steps :
 # 1. Execute this command :
@@ -37,7 +34,7 @@ build-deb:
     PACKAGE_NAME: "waifucompanion"
   script:
     - mkdir -p ROOTFS/opt/waifucompanion
-    - rsync -av --exclude=".git*" --exclude="DEBIAN" . ROOTFS/opt/waifucompanion
+    - rsync -av --exclude=".git*" --exclude="DEBIAN" --exclude="README.md" --exclude="ROOTFS" . ROOTFS/opt/waifucompanion
     - rsync -av --exclude="misc" DEBIAN/ ROOTFS/DEBIAN
     - cp -R DEBIAN/misc/* ROOTFS/
 
