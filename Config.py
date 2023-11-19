@@ -4,7 +4,7 @@ from xdg.BaseDirectory import xdg_config_home
 
 
 class Config:
-    APP_VERSION = '2.0.0-alpha'
+    APP_VERSION = '2.0.0'
 
     def __init__(self):
         config_path = os.path.join(xdg_config_home, 'waifucompanion', 'config.json')
