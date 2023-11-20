@@ -4,7 +4,7 @@ from xdg.BaseDirectory import xdg_config_home
 
 
 class Config:
-    APP_VERSION = '2.0.2'
+    APP_VERSION = '2.0.3'
 
     def __init__(self):
         config_path = os.path.join(xdg_config_home, 'waifucompanion', 'config.json')
@@ -13,7 +13,8 @@ class Config:
                 config = json.load(config_file)
                 self.active_model = config['activeModelName'] if 'activeModelName' in config \
                     else None
-                self.other_configs = {}
+                self.other_configs = config['otherConfigs'] if 'otherConfigs' in config \
+                    else {}
 
     def save_config(self):
         config_path = os.path.join(xdg_config_home, 'waifucompanion', 'config.json')
