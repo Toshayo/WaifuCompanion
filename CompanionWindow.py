@@ -1,5 +1,5 @@
 from PyQt5.QtCore import Qt, QTimer, QPoint
-from PyQt5.QtGui import QIcon, QMouseEvent
+from PyQt5.QtGui import QIcon, QMouseEvent, QMoveEvent
 from PyQt5.QtWidgets import QGraphicsScene, QGraphicsView, QMenu, QSystemTrayIcon, QApplication
 
 from modelmanager.CompanionModelDefinition import CompanionModelDefinition
@@ -65,13 +65,13 @@ class CompanionWindow(QGraphicsView):
         # super().mousePressEvent(event)
         self.mouse_initial_position = event.pos()
         self.is_mouse_down = True
-        EventManager.INSTANCE.fire(self, EventManager.Events.COMPANION_WINDOW_MOUSE_DOWN)
+        EventManager.INSTANCE.fire(event, EventManager.Events.COMPANION_WINDOW_MOUSE_DOWN)
 
     def mouseReleaseEvent(self, event: QMouseEvent) -> None:
         # super().mouseReleaseEvent(event)
         self.is_mouse_down = False
         self.companion_model.update_position((self.pos().x(), self.pos().y()))
-        EventManager.INSTANCE.fire(self, EventManager.Events.COMPANION_WINDOW_MOUSE_UP)
+        EventManager.INSTANCE.fire(event, EventManager.Events.COMPANION_WINDOW_MOUSE_UP)
 
     def mouseMoveEvent(self, event: QMouseEvent) -> None:
         self.move(
@@ -79,9 +79,9 @@ class CompanionWindow(QGraphicsView):
             self.pos().y() + event.y() - self.mouse_initial_position.y()
         )
 
-    def moveEvent(self, event):
+    def moveEvent(self, event: QMoveEvent):
         super().moveEvent(event)
-        EventManager.INSTANCE.fire(self, EventManager.Events.COMPANION_WINDOW_MOVED)
+        EventManager.INSTANCE.fire(event, EventManager.Events.COMPANION_WINDOW_MOVED)
 
     def tick(self):
         if self.is_mouse_down:
