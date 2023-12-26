@@ -68,15 +68,15 @@ class CompanionWindow(QGraphicsView):
         EventManager.INSTANCE.fire(event, EventManager.Events.COMPANION_WINDOW_MOUSE_DOWN)
 
     def mouseReleaseEvent(self, event: QMouseEvent) -> None:
-        # super().mouseReleaseEvent(event)
+        super().mouseReleaseEvent(event)
         self.is_mouse_down = False
         self.companion_model.update_position((self.pos().x(), self.pos().y()))
         EventManager.INSTANCE.fire(event, EventManager.Events.COMPANION_WINDOW_MOUSE_UP)
 
     def mouseMoveEvent(self, event: QMouseEvent) -> None:
         self.move(
-            self.pos().x() + event.x() - self.mouse_initial_position.x(),
-            self.pos().y() + event.y() - self.mouse_initial_position.y()
+            event.globalPos().x() - self.mouse_initial_position.x(),
+            event.globalPos().y() - self.mouse_initial_position.y()
         )
 
     def moveEvent(self, event: QMoveEvent):

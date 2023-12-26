@@ -7,3 +7,4 @@
 # IDE Folders
 /.idea/
 __pycache__/
+venv/
