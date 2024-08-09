@@ -1,23 +1,31 @@
 import json
 import os.path
-from xdg.BaseDirectory import xdg_config_home
+from platformdirs import user_config_dir
 
 
 class Config:
     APP_VERSION = '2.0.4'
 
     def __init__(self):
-        config_path = os.path.join(xdg_config_home, 'waifucompanion', 'config.json')
+        config_path = os.path.join(
+            user_config_dir(appname='WaifuCompanion', appauthor='Toshayo', ensure_exists=True),
+            'config.json'
+        )
+        self.active_model = None
+        self.other_configs = {}
         if os.path.exists(config_path):
             with open(config_path, 'r') as config_file:
                 config = json.load(config_file)
-                self.active_model = config['activeModelName'] if 'activeModelName' in config \
-                    else None
-                self.other_configs = config['otherConfigs'] if 'otherConfigs' in config \
-                    else {}
+                if 'activeModelName' in config:
+                    self.active_model = config['activeModelName']
+                if 'otherConfigs' in config:
+                    self.other_configs = config['otherConfigs']
 
     def save_config(self):
-        config_path = os.path.join(xdg_config_home, 'waifucompanion', 'config.json')
+        config_path = os.path.join(
+            user_config_dir(appname='WaifuCompanion', appauthor='Toshayo', ensure_exists=True),
+            'config.json'
+        )
         with open(config_path, 'w') as config_file:
             json.dump({
                 'activeModelName': self.active_model,
