@@ -31,7 +31,7 @@ class CompanionGraphicsItem(QGraphicsItem):
     def paint(self, painter: QtGui.QPainter, option: QStyleOptionGraphicsItem,
               widget: typing.Optional[QWidget] = ...) -> None:
         img = self.waifu.copy(QRectF(*self.companion_model.get_next_frame_bounds()).toRect())
-        if self.companion_model.is_inverted ^ (self.companion_model.speed[0] < 0):
+        if self.companion_model.should_flip():
             img = img.transformed(QTransform().scale(-1, 1), Qt.FastTransformation)
         animation_offset = self.companion_model.get_sprite_offset()
         painter.drawPixmap(

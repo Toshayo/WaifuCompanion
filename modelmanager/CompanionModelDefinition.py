@@ -145,6 +145,12 @@ class CompanionModelDefinition:
             return {'x': 0, 'y': 0}
         return self.animations[self.current_animation]['spriteOffset']
 
+    def should_flip(self) -> bool:
+        if self.current_animation not in self.animations or \
+                'spritesRev' not in self.animations[self.current_animation]:
+            return self.is_inverted ^ (self.speed[0] < 0)
+        return False
+
     def get_next_frame_bounds(self) -> tuple[int, int, int, int]:
         if self.sprite_count['w'] == 1 and self.sprite_count['h'] == 1:
             return 0, 0, self.image_size['w'], self.image_size['h']

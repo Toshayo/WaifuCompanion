@@ -4,7 +4,7 @@ from platformdirs import user_config_dir
 
 
 class Config:
-    APP_VERSION = '2.0.7'
+    APP_VERSION = '2.0.8'
 
     def __init__(self):
         config_path = os.path.join(
