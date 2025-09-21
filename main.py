@@ -1,3 +1,4 @@
+import json
 import os
 import pkgutil
 import sys
@@ -23,9 +24,17 @@ if __name__ == '__main__':
     if Config.INSTANCE.active_model is None:
         Config.INSTANCE.set_active_model(list(CompanionModelManager.INSTANCE.models.keys())[0])
 
+    disabled_plugins = []
+    if os.path.exists('plugins/disabled_plugins.json'):
+        with open('plugins/disabled_plugins.json') as file:
+            disabled_plugins = json.load(file)
+
     plugins = [__import__('plugins.' + name, fromlist=[''])
-               for _, name, _ in pkgutil.iter_modules([os.path.abspath('plugins')])]
+               for _, name, _ in pkgutil.iter_modules([os.path.abspath('plugins')]) if name not in disabled_plugins]
     EventManager.INSTANCE.fire(None, EventManager.Events.PLUGINS_INIT)
+
+    if Config.INSTANCE.active_model not in CompanionModelManager.INSTANCE.models:
+        Config.INSTANCE.set_active_model(list(CompanionModelManager.INSTANCE.models.keys())[0])
 
     window = CompanionWindow(
         app, CompanionModelManager.INSTANCE.models[Config.INSTANCE.active_model]

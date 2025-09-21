@@ -33,8 +33,9 @@ class CompanionGraphicsItem(QGraphicsItem):
         img = self.waifu.copy(QRectF(*self.companion_model.get_next_frame_bounds()).toRect())
         if self.companion_model.is_inverted ^ (self.companion_model.speed[0] < 0):
             img = img.transformed(QTransform().scale(-1, 1), Qt.FastTransformation)
+        animation_offset = self.companion_model.get_sprite_offset()
         painter.drawPixmap(
-            QRectF(0, 0, self.frames_size['w'], self.frames_size['h']),
+            QRectF(animation_offset['x'], animation_offset['y'], self.frames_size['w'], self.frames_size['h']),
             img,
             QRectF(img.rect())
         )

@@ -20,12 +20,16 @@ class CompanionModelDefinition:
         self.language = manifest['language']
         self.frames_count = manifest['sprite']['frameCount'] if 'frameCount' in manifest['sprite'] \
             else 1
+        self.frame_timer = manifest['sprite']['frameTimer'] if 'frameTimer' in manifest['sprite'] else 0
         self.sprite_count = manifest['sprite']['spriteCount']
         self.image_size = manifest['sprite']['meta']['size']
         self.frame_size = {
             'w': self.image_size['w'] / self.sprite_count['w'],
             'h': self.image_size['h'] / self.sprite_count['h']
         }
+        self.animations = manifest['sprite']['animations'] if 'animations' in manifest['sprite'] else {}
+        self.current_frame = 0
+        self.current_animation = ''
         self.current_animation_frame = 0
         self.image = os.path.join(location, manifest['sprite']['meta']['image'])
         self.can_fly = manifest['canFly'] if 'canFly' in manifest else False
@@ -35,6 +39,8 @@ class CompanionModelDefinition:
         self.pos = [0, 0]
 
         self.want_to_walk = True
+        self.blink_interval = time.time_ns()
+        self.blink_stage = -1
         self.last_state_change_time = time.time()
         self.state_change_time = 1
         self.last_animation_frame_change_time = time.time_ns()
@@ -120,16 +126,55 @@ class CompanionModelDefinition:
             self.frame_size[i] *= scale
             self.image_size[i] *= scale
 
+    def increment_animation_frame_index(self):
+        if self.animations[self.current_animation]['intervals'] != 0:
+            if self.last_animation_frame_change_time + self.animations[self.current_animation]['intervals'] * 10 ** 6 < time.time_ns():
+                self.current_animation_frame += 1
+                if self.current_animation_frame >= len(self.animations[self.current_animation]['sprites']):
+                    self.current_animation_frame = 0
+                self.last_animation_frame_change_time = time.time_ns()
+
+    def set_current_animation(self, animation: str):
+        if self.current_animation != animation:
+            self.current_animation = animation
+            self.current_animation_frame = 0
+
+    def get_sprite_offset(self) -> dict[str, float]:
+        if self.current_animation not in self.animations or \
+                'spriteOffset' not in self.animations[self.current_animation]:
+            return {'x': 0, 'y': 0}
+        return self.animations[self.current_animation]['spriteOffset']
+
     def get_next_frame_bounds(self) -> tuple[int, int, int, int]:
         if self.sprite_count['w'] == 1 and self.sprite_count['h'] == 1:
             return 0, 0, self.image_size['w'], self.image_size['h']
-        if self.last_animation_frame_change_time + 25 * 10**6 < time.time_ns():
-            self.last_animation_frame_change_time = time.time_ns()
-            self.current_animation_frame += 1
-            if self.current_animation_frame >= self.frames_count:
-                self.current_animation_frame = 0
+        if not self.want_to_walk:
+            if 'idle' in self.animations:
+                self.set_current_animation('idle')
+                self.current_frame = self.animations['idle']['sprites'][self.current_animation_frame]
+                self.increment_animation_frame_index()
+        else:
+            if 'walk' in self.animations:
+                self.set_current_animation('walk')
+                sprites_selection = 'sprites'
+                if 'spritesRev' in self.animations['walk'] and self.speed[0] > 0:
+                    sprites_selection = 'spritesRev'
+                self.current_frame = self.animations['walk'][sprites_selection][self.current_animation_frame]
+                self.increment_animation_frame_index()
+        if '@blink@' in self.animations:
+            if self.blink_stage == -1:
+                if self.blink_interval + self.animations['@blink@']['intervals'] * 10**6 < time.time_ns():
+                    self.blink_stage = 0
+                    self.blink_interval = time.time_ns()
+            elif self.blink_stage >= 0:
+                self.current_frame += self.animations['@blink@']['spriteIndexOffsets'][self.blink_stage]
+                if self.blink_interval + self.animations['@blink@']['offsetIntervals'] * 10**6 < time.time_ns():
+                    self.blink_stage += 1
+                    self.blink_interval = time.time_ns()
+            if self.blink_stage >= len(self.animations['@blink@']['spriteIndexOffsets']):
+                self.blink_stage = -1
         return (
-            self.frame_size['w'] * (self.current_animation_frame % self.sprite_count['w']),
-            self.frame_size['h'] * (self.current_animation_frame // self.sprite_count['w']),
+            self.frame_size['w'] * (self.current_frame % self.sprite_count['w']),
+            self.frame_size['h'] * (self.current_frame // self.sprite_count['w']),
             self.frame_size['w'], self.frame_size['h']
         )

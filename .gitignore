@@ -3,6 +3,7 @@
 
 # App plugins
 /plugins/*/
+/plugins/disabled_plugins.json
 
 # IDE Folders
 /.idea/
