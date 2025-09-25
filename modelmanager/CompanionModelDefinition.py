@@ -121,17 +121,23 @@ class CompanionModelDefinition:
             y = screen_bounds[3] - companion_size[3]
         return x, y
 
-    def apply_scale(self, scale):
-        for i in 'w', 'h':
-            self.frame_size[i] *= scale
-            self.image_size[i] *= scale
+    def set_frame_size(self, size: dict[str, int]):
+        self.frame_size = size.copy()
+        self.image_size = {
+            'w': self.frame_size['w'] * self.sprite_count['w'],
+            'h': self.frame_size['h'] * self.sprite_count['h']
+        }
 
     def increment_animation_frame_index(self):
         if self.animations[self.current_animation]['intervals'] != 0:
             if self.last_animation_frame_change_time + self.animations[self.current_animation]['intervals'] * 10 ** 6 < time.time_ns():
                 self.current_animation_frame += 1
-                if self.current_animation_frame >= len(self.animations[self.current_animation]['sprites']):
-                    self.current_animation_frame = 0
+                if 'sprites' in self.animations[self.current_animation]:
+                    if self.current_animation_frame >= len(self.animations[self.current_animation]['sprites']):
+                        self.current_animation_frame = 0
+                else:
+                    if self.current_animation_frame >= self.frames_count:
+                        self.current_animation_frame = 0
                 self.last_animation_frame_change_time = time.time_ns()
 
     def set_current_animation(self, animation: str):
@@ -166,6 +172,13 @@ class CompanionModelDefinition:
                 if 'spritesRev' in self.animations['walk'] and self.speed[0] > 0:
                     sprites_selection = 'spritesRev'
                 self.current_frame = self.animations['walk'][sprites_selection][self.current_animation_frame]
+                self.increment_animation_frame_index()
+            elif 'idle' in self.animations:
+                self.set_current_animation('idle')
+                if 'sprites' in self.animations['idle']:
+                    self.current_frame = self.animations['idle']['sprites'][self.current_animation_frame]
+                else:
+                    self.current_frame = self.current_animation_frame
                 self.increment_animation_frame_index()
         if '@blink@' in self.animations:
             if self.blink_stage == -1:

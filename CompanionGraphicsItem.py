@@ -18,15 +18,17 @@ class CompanionGraphicsItem(QGraphicsItem):
         self.waifu.load(companion_model.image, "PNG")
         target_height = screen_size.height() * 0.2 * companion_model.scale
         self.model_scale = target_height / (self.waifu.height() / companion_model.sprite_count['h'])
-        self.waifu = self.waifu.scaledToHeight(
-            int(target_height * companion_model.sprite_count['h']),
+        self.frame_size = {
+            'w': round(self.waifu.width() * self.model_scale / self.companion_model.sprite_count['w']),
+            'h': round(self.waifu.height() * self.model_scale / self.companion_model.sprite_count['h'])
+        }
+        self.waifu = self.waifu.scaled(
+            self.frame_size['w'] * self.companion_model.sprite_count['w'],
+            self.frame_size['h'] * self.companion_model.sprite_count['h'],
+            Qt.IgnoreAspectRatio,
             Qt.SmoothTransformation
         )
-        self.frames_size = {
-            'w': self.waifu.width() / self.companion_model.sprite_count['w'],
-            'h': self.waifu.height() / self.companion_model.sprite_count['h']
-        }
-        self.companion_model.apply_scale(self.model_scale)
+        self.companion_model.set_frame_size(self.frame_size)
 
     def paint(self, painter: QtGui.QPainter, option: QStyleOptionGraphicsItem,
               widget: typing.Optional[QWidget] = ...) -> None:
@@ -35,7 +37,7 @@ class CompanionGraphicsItem(QGraphicsItem):
             img = img.transformed(QTransform().scale(-1, 1), Qt.FastTransformation)
         animation_offset = self.companion_model.get_sprite_offset()
         painter.drawPixmap(
-            QRectF(animation_offset['x'], animation_offset['y'], self.frames_size['w'], self.frames_size['h']),
+            QRectF(animation_offset['x'], animation_offset['y'], self.frame_size['w'], self.frame_size['h']),
             img,
             QRectF(img.rect())
         )
@@ -51,6 +53,6 @@ class CompanionGraphicsItem(QGraphicsItem):
     def boundingRect(self) -> QRectF:
         return QRectF(
             0, 0,
-            self.frames_size['w'],
-            self.frames_size['h']
+            self.frame_size['w'],
+            self.frame_size['h']
         )
