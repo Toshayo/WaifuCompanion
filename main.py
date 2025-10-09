@@ -24,6 +24,10 @@ if __name__ == '__main__':
     if Config.INSTANCE.active_model is None:
         Config.INSTANCE.set_active_model(list(CompanionModelManager.INSTANCE.models.keys())[0])
 
+    for arg in sys.argv:
+        if arg.startswith('--model='):
+            Config.INSTANCE.active_model = arg[len('--model='):]
+
     disabled_plugins = []
     if os.path.exists('plugins/disabled_plugins.json'):
         with open('plugins/disabled_plugins.json') as file:
