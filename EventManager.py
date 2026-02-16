@@ -10,6 +10,7 @@ class Events:
     COMPANION_WINDOW_MOUSE_DOUBLE_CLICK = 'base-cwmdc'
     COMPANION_WINDOW_RENDER_PRE = 'base-cwrpr'
     COMPANION_WINDOW_RENDER_POST = 'base-cwrps'
+    COMPANION_WINDOW_TICK = 'base-cwtk'
 
 
 class EventManager:

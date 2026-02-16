@@ -106,3 +106,4 @@ class CompanionWindow(QGraphicsView):
         if self.companion_model.frames_count > 1:
             self.repaint()
         self.move(int(x), int(y))
+        EventManager.INSTANCE.fire(EventManager.Events.COMPANION_WINDOW_TICK, self)
