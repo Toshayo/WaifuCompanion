@@ -5,6 +5,7 @@ from PyQt5.QtCore import Qt, QRectF, QSize
 from PyQt5.QtGui import QPixmap, QTransform
 from PyQt5.QtWidgets import QGraphicsItem, QWidget, QStyleOptionGraphicsItem
 
+import EventManager
 from modelmanager.CompanionModelManager import CompanionModelDefinition
 
 
@@ -32,6 +33,7 @@ class CompanionGraphicsItem(QGraphicsItem):
 
     def paint(self, painter: QtGui.QPainter, option: QStyleOptionGraphicsItem,
               widget: typing.Optional[QWidget] = ...) -> None:
+        EventManager.INSTANCE.fire(EventManager.Events.COMPANION_WINDOW_RENDER_PRE, self, painter, option, widget)
         img = self.waifu.copy(QRectF(*self.companion_model.get_next_frame_bounds()).toRect())
         if self.companion_model.should_flip():
             img = img.transformed(QTransform().scale(-1, 1), Qt.FastTransformation)
@@ -41,6 +43,7 @@ class CompanionGraphicsItem(QGraphicsItem):
             img,
             QRectF(img.rect())
         )
+        EventManager.INSTANCE.fire(EventManager.Events.COMPANION_WINDOW_RENDER_POST, self, painter, option, widget)
 
     def get_model_bounds(self) -> tuple[int, int, int, int]:
         return (

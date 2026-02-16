@@ -43,7 +43,7 @@ class CompanionWindow(QGraphicsView):
         self.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
         self.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
 
-        EventManager.INSTANCE.fire(self, EventManager.Events.COMPANION_WINDOW_CONSTRUCT)
+        EventManager.INSTANCE.fire(EventManager.Events.COMPANION_WINDOW_CONSTRUCT, self)
 
     def init_tray(self):
         self.tray.activated.connect(lambda: self.setVisible(not self.isVisible()))
@@ -54,7 +54,7 @@ class CompanionWindow(QGraphicsView):
         tray_version = tray_menu.addAction('Version : ' + Config.INSTANCE.APP_VERSION)
         tray_version.setDisabled(True)
 
-        EventManager.INSTANCE.fire(tray_menu, EventManager.Events.COMPANION_TRAY_INIT)
+        EventManager.INSTANCE.fire(EventManager.Events.COMPANION_TRAY_INIT, tray_menu)
 
         tray_quit_app = tray_menu.addAction('Quit')
         tray_quit_app.triggered.connect(self.app.quit)
@@ -66,23 +66,27 @@ class CompanionWindow(QGraphicsView):
         # super().mousePressEvent(event)
         self.mouse_initial_position = event.pos()
         self.is_mouse_down = True
-        EventManager.INSTANCE.fire(event, EventManager.Events.COMPANION_WINDOW_MOUSE_DOWN)
+        EventManager.INSTANCE.fire(EventManager.Events.COMPANION_WINDOW_MOUSE_DOWN, self, event)
 
     def mouseReleaseEvent(self, event: QMouseEvent) -> None:
         super().mouseReleaseEvent(event)
         self.is_mouse_down = False
         self.companion_model.update_position((self.pos().x(), self.pos().y()))
-        EventManager.INSTANCE.fire(event, EventManager.Events.COMPANION_WINDOW_MOUSE_UP)
+        EventManager.INSTANCE.fire(EventManager.Events.COMPANION_WINDOW_MOUSE_UP, self, event)
 
     def mouseMoveEvent(self, event: QMouseEvent) -> None:
         self.move(
             event.globalPos().x() - self.mouse_initial_position.x(),
             event.globalPos().y() - self.mouse_initial_position.y()
         )
+        
+    def mouseDoubleClickEvent(self, event):
+        super().mouseDoubleClickEvent(event)
+        EventManager.INSTANCE.fire(EventManager.Events.COMPANION_WINDOW_MOUSE_DOUBLE_CLICK, self, event)
 
     def moveEvent(self, event: QMoveEvent):
         super().moveEvent(event)
-        EventManager.INSTANCE.fire(event, EventManager.Events.COMPANION_WINDOW_MOVED)
+        EventManager.INSTANCE.fire(EventManager.Events.COMPANION_WINDOW_MOVED, self, event)
 
     def tick(self):
         if self.is_mouse_down:

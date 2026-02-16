@@ -34,7 +34,7 @@ class CompanionModelManager(QObject):
             action.setChecked(False)
         sender.setChecked(True)
         Config.INSTANCE.set_active_model(sender.text())
-        EventManager.INSTANCE.fire(self, EventManager.Events.RESTART)
+        EventManager.INSTANCE.fire(EventManager.Events.RESTART, self)
 
     def tray_init(self, tray_menu: QMenu):
         tray_switch_model_menu = tray_menu.addMenu('Switch model')

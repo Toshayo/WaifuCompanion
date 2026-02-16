@@ -4,7 +4,7 @@ from platformdirs import user_config_dir
 
 
 class Config:
-    APP_VERSION = '2.0.12'
+    APP_VERSION = '2.0.13'
 
     def __init__(self):
         config_path = os.path.join(
@@ -13,7 +13,7 @@ class Config:
         )
         self.active_model = None
         self.other_configs = {}
-        self.bypass_window_manager = True
+        self.bypass_window_manager = False
         if os.path.exists(config_path):
             with open(config_path, 'r') as config_file:
                 config = json.load(config_file)

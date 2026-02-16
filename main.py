@@ -12,7 +12,7 @@ from CompanionWindow import CompanionWindow
 from modelmanager import CompanionModelManager
 
 
-def restart(_):
+def restart(_sender):
     global app
     app.quit()
     os.execv(sys.executable, ['python3'] + sys.argv)
@@ -35,7 +35,7 @@ if __name__ == '__main__':
 
     plugins = [__import__('plugins.' + name, fromlist=[''])
                for _, name, _ in pkgutil.iter_modules([os.path.abspath('plugins')]) if name not in disabled_plugins]
-    EventManager.INSTANCE.fire(None, EventManager.Events.PLUGINS_INIT)
+    EventManager.INSTANCE.fire(EventManager.Events.PLUGINS_INIT, None)
 
     if Config.INSTANCE.active_model not in CompanionModelManager.INSTANCE.models:
         Config.INSTANCE.set_active_model(list(CompanionModelManager.INSTANCE.models.keys())[0])
