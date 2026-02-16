@@ -22,22 +22,44 @@ Here is an example manifest :
   "aabb": {
     "x": 0,
     "y": 0,
-    "width": 264,
-    "height": 220
+    "width": 1314,
+    "height": 1290
   },
   "sprite": {
     "meta": {
       "image": "companion.png",
       "format": "RGBA8888",
       "size": {
-        "w": 300,
-        "h": 500
+        "w": 3942,
+        "h": 6570
       },
       "scale": 1
     },
     "spriteCount": {
-      "w": 1,
-      "h": 1
+      "w": 3,
+      "h": 5
+    },
+    "frameCount": 80,
+    "animations": {
+      "idle": {
+        "sprites": [0],
+        "spritesRev": [0],
+        "intervals": 0,
+        "spriteOffset": {
+          "x": 0,
+          "y": 20
+        }
+      },
+      "walk": {
+        "sprites": [3, 6],
+        "spritesRev": [9, 12],
+        "intervals": 500
+      },
+      "@blink@": {
+        "spriteIndexOffsets": [0, 1, 2],
+        "intervals": 3000,
+        "offsetIntervals": 100
+      }
     }
   }
 }
@@ -50,11 +72,20 @@ the right direction.
 - **language** - used in some plugins, for example, DialogFlow Integration plugin.
 - **canFly** - used to define if the character can walk or fly.
 - **aabb** - used to redefine character bounding box.
-- **sprite** - sprite definition which consists of :
+- **sprite** - sprite definition which consists of:
     - **meta** - sprite-sheet file, format, size and scale.
     Format and scale are usually not changed.
     - **spriteCount** - number of horizontal and vertical sprites.
-    The sprite-sheet is walked from the left to the right, from up to down.
+    The sprite-sheet is walked from the left to the right, from up to down by default.
+    - **animations** - an array of animation overrides, each consists of:
+      - **sprites** - an array of sprite indexes
+      - **spritesRev** - an array of sprite indexes when moving in opposite direction
+      - **intervals** - interval of sprite changing, 0 to disable
+      - **spriteOffset** - x and y of offset of the sprite
+    There's a special @blink@ animation that takes:
+      - **spriteIndexOffsets** - offsets of blink stages. sprite = current sprite + blink stage offset
+      - **intervals** - interval of blinking
+      - **offsetIntervals** - interval between blink stages
 
 ## Plugins
 The app has a plugin system that allows to add more functionality to
