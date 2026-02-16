@@ -17,7 +17,8 @@ class CompanionWindow(QGraphicsView):
 
         self.delta_x = True
 
-        self.setWindowFlags(Qt.Tool | Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint)
+        additional_flag = Qt.BypassWindowManagerHint if Config.INSTANCE.bypass_window_manager else 0
+        self.setWindowFlags(Qt.Tool | Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint | additional_flag)
         self.setAttribute(Qt.WA_NoSystemBackground)
         self.setAttribute(Qt.WA_TranslucentBackground)
         self.setStyleSheet('background:transparent')
