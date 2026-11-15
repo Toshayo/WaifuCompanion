@@ -41,7 +41,7 @@ if __name__ == '__main__':
         Config.INSTANCE.set_active_model(list(CompanionModelManager.INSTANCE.models.keys())[0])
 
     window = CompanionWindow(
-        app, CompanionModelManager.INSTANCE.models[Config.INSTANCE.active_model]
+        app, CompanionModelManager.INSTANCE.models[Config.INSTANCE.active_model], Config.INSTANCE.is_click_through
     )
     window.move(QCursor.pos())
     window.show()

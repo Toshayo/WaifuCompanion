@@ -9,7 +9,7 @@ from CompanionGraphicsItem import CompanionGraphicsItem
 
 
 class CompanionWindow(QGraphicsView):
-    def __init__(self, app: QApplication, companion_model: CompanionModelDefinition):
+    def __init__(self, app: QApplication, companion_model: CompanionModelDefinition, is_click_through: bool):
         super().__init__()
 
         self.app = app
@@ -18,6 +18,8 @@ class CompanionWindow(QGraphicsView):
         self.delta_x = True
 
         additional_flag = Qt.BypassWindowManagerHint if Config.INSTANCE.bypass_window_manager else 0
+        if is_click_through:
+            additional_flag |= Qt.WindowType.WindowTransparentForInput
         self.setWindowFlags(Qt.Tool | Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint | additional_flag)
         self.setAttribute(Qt.WA_NoSystemBackground)
         self.setAttribute(Qt.WA_TranslucentBackground)
@@ -56,11 +58,21 @@ class CompanionWindow(QGraphicsView):
 
         EventManager.INSTANCE.fire(EventManager.Events.COMPANION_TRAY_INIT, tray_menu)
 
+        settings_menu = tray_menu.addMenu('Settings')
+        click_through_action = settings_menu.addAction('Immateriality')
+        click_through_action.setCheckable(True)
+        click_through_action.setChecked(Config.INSTANCE.is_click_through)
+        click_through_action.triggered.connect(self.toggle_click_through)
+
         tray_quit_app = tray_menu.addAction('Quit')
         tray_quit_app.triggered.connect(self.app.quit)
 
         self.tray.setContextMenu(tray_menu)
         self.tray.show()
+
+    def toggle_click_through(self):
+        Config.INSTANCE.toggle_click_through()
+        EventManager.INSTANCE.fire(EventManager.Events.RESTART, self)
 
     def mousePressEvent(self, event: QMouseEvent) -> None:
         # super().mousePressEvent(event)
