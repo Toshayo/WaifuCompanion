@@ -63,6 +63,10 @@ class CompanionWindow(QGraphicsView):
         click_through_action.setCheckable(True)
         click_through_action.setChecked(Config.INSTANCE.is_click_through)
         click_through_action.triggered.connect(self.toggle_click_through)
+        window_manager_bypass_action = settings_menu.addAction('Bypass Window Manager')
+        window_manager_bypass_action.setCheckable(True)
+        window_manager_bypass_action.setChecked(Config.INSTANCE.bypass_window_manager)
+        window_manager_bypass_action.triggered.connect(self.toggle_bypass_wm)
 
         tray_quit_app = tray_menu.addAction('Quit')
         tray_quit_app.triggered.connect(self.app.quit)
@@ -72,6 +76,10 @@ class CompanionWindow(QGraphicsView):
 
     def toggle_click_through(self):
         Config.INSTANCE.toggle_click_through()
+        EventManager.INSTANCE.fire(EventManager.Events.RESTART, self)
+
+    def toggle_bypass_wm(self):
+        Config.INSTANCE.toggle_bypass_window_manager()
         EventManager.INSTANCE.fire(EventManager.Events.RESTART, self)
 
     def mousePressEvent(self, event: QMouseEvent) -> None:

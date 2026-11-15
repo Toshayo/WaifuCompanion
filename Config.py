@@ -48,5 +48,9 @@ class Config:
         self.is_click_through = not self.is_click_through
         self.save_config()
 
+    def toggle_bypass_window_manager(self):
+        self.bypass_window_manager = not self.bypass_window_manager
+        self.save_config()
+
 
 INSTANCE = Config()
