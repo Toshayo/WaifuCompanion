@@ -94,7 +94,7 @@ class CompanionModelDefinition:
                                screen_bounds[3] - companion_size[3])
         else:
             y = screen_bounds[3] - companion_size[3]
-        delta = x - pos[0], y - pos[1]
+        delta = x - pos[0], (y - pos[1] if self.can_fly else 0)
         distance = math.sqrt(delta[0] ** 2 + delta[1] ** 2)
         if distance == 0:
             self.find_new_target(screen_bounds, companion_size, pos)
